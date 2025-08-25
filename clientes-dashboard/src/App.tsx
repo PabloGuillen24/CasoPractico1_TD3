@@ -1,22 +1,28 @@
-// src/App.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ClientesList from './components/ClientesList';
-import ClienteForm from './components/ClienteForm';
+import './App.css';
 
 function App() {
+    const [clientes, setClientes] = useState([]);
+
+    const fetchClientes = async () => {
+        try {
+            const res = await fetch('http://localhost:3001/api/clientes');
+            const data = await res.json();
+            setClientes(data);
+        } catch (error) {
+            console.error('Error al obtener clientes:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchClientes();
+    }, []);
+
     return (
-        <div className="App p-6 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-                Gestión de Clientes
-            </h1>
-
-            <div className="mb-8">
-                <ClienteForm />
-            </div>
-
-            <div>
-                <ClientesList />
-            </div>
+        <div className="App">
+            <h1 className="app-title">Caso Practico 1 TD3 EQUIPO 4</h1>
+            <ClientesList clientes={clientes} onRefresh={fetchClientes} />
         </div>
     );
 }
